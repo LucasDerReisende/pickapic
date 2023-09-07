@@ -1,10 +1,15 @@
 import {router} from "expo-router";
 import {Appbar, Button, PaperProvider, TextInput} from "react-native-paper";
 import {useState} from "react";
+import {client} from "../lib/supabaseClient";
+import {createRandomPin} from "../lib/helpers";
+import {createClient, RealtimeChannel} from "@supabase/supabase-js";
 
 export default function HomeScreen() {
 
     const [playerName, setPlayerName] = useState<string>("");
+    const [channel, setChannel] = useState<RealtimeChannel | null>(null)
+
 
     const startGame = () => {
         const channel = client.channel(createRandomPin())

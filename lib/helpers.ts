@@ -1,6 +1,7 @@
 import {client} from "./supabaseClient";
-import {setUsers} from "../state/slices";
+import {setUsers, startGame,} from "../state/slices";
 import {AnyAction, Dispatch} from "redux";
+import {router} from "expo-router";
 
 export function createRandomPin() {
     const min = 0;       // Minimum 6-digit number
@@ -27,6 +28,11 @@ export function createChannel(pin: string, name: string, dispatch: Dispatch<AnyA
                 })
                 dispatch(setUsers(users))
             })
+        .on("broadcast", {event: "start_game"}, (message) => {
+            console.log("start_game", message)
+            router.push("/GameScreen")
+            dispatch(startGame())
+        })
         .subscribe(async (status) => {
             if (status === "SUBSCRIBED") {
                 const presenceTrackStatus = await channel.track({
@@ -35,5 +41,7 @@ export function createChannel(pin: string, name: string, dispatch: Dispatch<AnyA
                 })
             }
         })
+
+
     return channel
 }

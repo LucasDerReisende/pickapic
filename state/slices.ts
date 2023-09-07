@@ -12,7 +12,8 @@ export const stateSlice =  createSlice({
     initialState: {
         name: "",
         pin: "",
-        users: []
+        users: [],
+        gameStarted: false
     },
     reducers: {
         setName: (state, action) => {
@@ -23,9 +24,15 @@ export const stateSlice =  createSlice({
         },
         setUsers: (state, action) => {
             state.users = action.payload
+        },
+        startGame: (state) => {
+            state.gameStarted = true
+        },
+        stopGame: (state) => {
+            state.gameStarted = false
         }
     }
 })
 
-export const {setName, setPin, setUsers} = stateSlice.actions
+export const {setName, setPin, setUsers, startGame, stopGame} = stateSlice.actions
 export default stateSlice.reducer

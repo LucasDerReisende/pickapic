@@ -23,6 +23,7 @@ export default function LobbyScreen() {
     const pin = useSelector((state: RootState) => state.state.pin)
     const name = useSelector((state: RootState) => state.state.name)
     const users = useSelector((state: RootState) => state.state.users)
+    const gameStarted = useSelector((state: RootState) => state.state.gameStarted)
     const {supabaseChannel, setSupabaseChannel} = useSupabase();
 
     const dispatch = useDispatch()
@@ -57,6 +58,18 @@ export default function LobbyScreen() {
     }
 
     const startGame = () => {
+        if (supabaseChannel == null)
+            return
+        supabaseChannel.send({
+            type: "broadcast",
+            event: "start_game",
+            payload: {
+
+            }
+        }).then(() => {
+            console.log("Sent start game")
+        })
+
         router.push("/GameScreen")
     }
 

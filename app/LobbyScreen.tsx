@@ -2,6 +2,8 @@ import {View, Text} from "react-native";
 import {Appbar, Button} from "react-native-paper";
 import {router} from "expo-router";
 import LobbyNameListItem from "../components/LobbyNameListItem";
+import {useSelector} from "react-redux";
+import {RootState} from "../state/store";
 
 class Player {
     name: string
@@ -14,6 +16,9 @@ class Player {
 }
 
 export default function LobbyScreen() {
+
+    const pin = useSelector((state: RootState) => state.state.pin)
+
 
     const uploadPhotos = () => {
         router.push("/UploadScreen")
@@ -36,7 +41,7 @@ export default function LobbyScreen() {
             </Appbar.Header>
             <View>
                 <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                    <Text style={{fontSize: 36, marginBottom: 20}}>123456</Text>
+                    <Text style={{fontSize: 36, marginBottom: 20}}>{pin}</Text>
                     <Text>Game Pin</Text>
                 </View>
                 {

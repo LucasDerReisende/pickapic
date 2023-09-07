@@ -4,6 +4,8 @@ import {router} from "expo-router";
 import LobbyNameListItem from "../components/LobbyNameListItem";
 import {useSelector} from "react-redux";
 import {RootState} from "../state/store";
+import {User} from "../lib/user";
+import {useSupabase} from "../components/SupabaseContext";
 
 class Player {
     name: string
@@ -18,6 +20,8 @@ class Player {
 export default function LobbyScreen() {
 
     const pin = useSelector((state: RootState) => state.state.pin)
+    const users = useSelector((state: RootState) => state.state.users)
+    const { supabaseChannel, setSupabaseChannel } = useSupabase();
 
 
     const uploadPhotos = () => {
@@ -36,7 +40,15 @@ export default function LobbyScreen() {
     return (
         <View>
             <Appbar.Header>
-                <Appbar.BackAction onPress={() => router.back()}/>
+                <Appbar.BackAction onPress={() => {
+                    if (supabaseChannel != null) {
+                        supabaseChannel.untrack().then(() => {
+                            console.log("Untracked channel")
+                        })
+                    }
+                    router.back()
+                }}
+                />
                 <Appbar.Content title={"Lobby"}/>
             </Appbar.Header>
             <View>

@@ -18,7 +18,7 @@ export default function PinEntryScreen() {
     const name = useSelector((state: RootState) => state.state.name)
 
     const confirmPin = () => {
-        const channel = createChannel(pinString, name)
+        const channel = createChannel(pinString, name, dispatch)
         setSupabaseChannel(channel)
         router.push("/LobbyScreen")
     }

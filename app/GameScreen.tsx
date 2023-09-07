@@ -1,5 +1,6 @@
 import { Button } from "react-native-paper";
 import { SafeAreaView, View, FlatList, Image } from "react-native";
+import { router } from "expo-router";
 
 const players = [
   { name: "Lucas" },
@@ -11,12 +12,12 @@ const players = [
 
 export default function GameScreen() {
   return (
-    <View style={{ flex: 1, padding: 5 }}>
-      <View style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
+      <View style={{ flex: 2 }}>
         <Image
           source={require("../assets/adaptive-icon.png")}
-          resizeMode="cover"
-          style={{ flex: 1, height: 100, width: null, marginBottom: 10 }}
+          resizeMode="contain"
+          style={{ flex: 1, height: null, width: "100%", marginBottom: 10 }}
         />
       </View>
       <SafeAreaView style={{ flex: 1, width: "100%" }}>
@@ -26,7 +27,9 @@ export default function GameScreen() {
           renderItem={({ item }) => (
             <Button
               mode="elevated"
-              onPress={() => {}}
+              onPress={() => {
+                router.push("/FinalLeaderboardScreen");
+              }}
               style={{ width: "46%", margin: "2%" }}
             >
               {item.name}

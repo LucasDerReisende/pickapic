@@ -1,35 +1,22 @@
+import { router } from "expo-router";
 import { Button, Text } from "react-native-paper";
-import { SafeAreaView, View, FlatList } from "react-native";
-
-const players = [
-  { name: "Lucas", score: 5 },
-  { name: "Conrad", score: 2 },
-  { name: "Luise", score: 7 },
-  { name: "Smilla", score: 10 },
-  { name: "Rebekka", score: 2 },
-];
+import { View } from "react-native";
+import LeaderboardList from "../components/LeaderboardList";
 
 export default function LeaderboardScreen() {
+  const continueGame = () => {
+    router.push("/GameScreen");
+  };
+
   return (
     <View style={{ flex: 1, padding: 20 }}>
       <Text variant="displayMedium">Leaderboard</Text>
-      <SafeAreaView style={{ flex: 1 }}>
-        <FlatList
-          data={players.sort((a, b) => b.score - a.score)}
-          style={{ padding: 10 }}
-          renderItem={({ item }) => (
-            <View style={{ flex: 1, flexDirection: "row" }}>
-              <Text variant="headlineSmall" style={{ flex: 1 }}>
-                {item.name}
-              </Text>
-              <Text variant="headlineSmall" style={{ flex: 1 }}>
-                {item.score}
-              </Text>
-            </View>
-          )}
-        />
-      </SafeAreaView>
-      <Button mode="contained" onPress={() => {}}>
+      <LeaderboardList />
+      <Button
+        mode="contained"
+        onPress={continueGame}
+        style={{ marginBottom: 20, marginHorizontal: 16 }}
+      >
         Continue
       </Button>
     </View>

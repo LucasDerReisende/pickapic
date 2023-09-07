@@ -1,23 +1,59 @@
 import {router} from "expo-router";
 import {Appbar, Button, PaperProvider, TextInput} from "react-native-paper";
-import {useState} from "react";
 import {client} from "../lib/supabaseClient";
 import {createRandomPin} from "../lib/helpers";
-import {createClient, RealtimeChannel} from "@supabase/supabase-js";
+import {setName} from "../state/slices";
+import {useDispatch, useSelector} from "react-redux";
+import {useSupabase} from "../components/SupabaseContext";
+import {RootState} from "../state/store";
+
 
 export default function HomeScreen() {
 
-    const [playerName, setPlayerName] = useState<string>("");
-    const [channel, setChannel] = useState<RealtimeChannel | null>(null)
+    const dispatch = useDispatch()
+
+    const name = useSelector((state: RootState) => state.state.name)
+
+    const {supabaseChannel, setSupabaseChannel} = useSupabase();
 
 
     const startGame = () => {
-        const channel = client.channel(createRandomPin())
-        setChannel(channel)
+        if (name == "") {
+            return
+        }
+        const randomPin = createRandomPin()
+        console.log("random pin", randomPin)
+        console.log('name', name)
+        const channel = client.channel(randomPin, {config: {presence: {key: name}}})
+
+
+        channel
+            .on("presence",
+                {event: "sync"},
+                () => {
+                    console.log("presence sync")
+                    const state = channel.presenceState()
+                    console.log('non', state)
+                })
+            .subscribe(async (status) => {
+                if (status === "SUBSCRIBED") {
+                    const presenceTrackStatus = await channel.track({
+                        user: name
+                    })
+                    console.log('presenceTrackStatus', presenceTrackStatus)
+                    console.log('name', name)
+
+                }
+            })
+
+        setSupabaseChannel(channel)
         router.push("/LobbyScreen")
     }
 
     const joinGame = () => {
+        if (supabaseChannel == null) {
+            return
+        }
         router.push("/PinEntryScreen")
     }
 
@@ -28,9 +64,9 @@ export default function HomeScreen() {
             </Appbar.Header>
             <TextInput
                 label="Name"
-                value={playerName}
+                value={name}
                 mode={"outlined"}
-                onChangeText={text => setPlayerName(text)}
+                onChangeText={text => dispatch(setName(text))}
                 style={{marginBottom: 20, marginHorizontal: 16}}
             />
             <Button mode="contained" onPress={startGame} style={{marginBottom: 20, marginHorizontal: 16}}>

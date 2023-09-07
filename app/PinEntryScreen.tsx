@@ -3,15 +3,43 @@ import {Appbar, Button, TextInput} from 'react-native-paper';
 import {router} from "expo-router";
 import {useState} from "react";
 import {client} from "../lib/supabaseClient";
-import {RealtimeChannel} from "@supabase/supabase-js";
+import {useDispatch, useSelector} from "react-redux";
+import {useSupabase} from "../components/SupabaseContext";
+import {RootState} from "../state/store";
 
 export default function PinEntryScreen() {
     const [pinString, setPinString] = useState<string>("")
-    const [channel, setChannel] = useState<RealtimeChannel | null>(null);
+
+    const dispatch = useDispatch()
+    const { supabaseChannel, setSupabaseChannel } = useSupabase();
+
+
+    const name = useSelector((state: RootState) => state.state.name)
 
     const confirmPin = () => {
-        const channel = client.channel(pinString)
-        setChannel(channel)
+        console.log("pinString", pinString)
+        console.log('name', name)
+        const channel = client.channel(pinString, {config: {presence: {key: name}}})
+
+        channel
+            .on("presence",
+                {event: "sync"},
+                () => {
+                    console.log("presence sync")
+                    const state = channel.presenceState()
+                    console.log('pin', state)
+                    console.log('sup', supabaseChannel)
+                })
+            .subscribe(async (status) => {
+                if (status === "SUBSCRIBED") {
+                    const presenceTrackStatus = await channel.track({
+                        user: name
+                    })
+                    console.log('presenceTrackStatus', presenceTrackStatus)
+                }
+            })
+
+        setSupabaseChannel(channel)
         router.push("/LobbyScreen")
     }
 
@@ -30,7 +58,7 @@ export default function PinEntryScreen() {
                 style={{marginBottom: 20, marginHorizontal: 16}}
             />
             <Button mode="contained" onPress={confirmPin} style={{marginBottom: 20, marginHorizontal: 16}}>
-                Confirm
+                Confirm {name}
             </Button>
         </View>
     )

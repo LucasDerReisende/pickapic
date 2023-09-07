@@ -11,12 +11,12 @@ const players = [
 
 export default function GameScreen() {
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, padding: 5 }}>
       <View style={{ flex: 1 }}>
         <Image
           source={require("../assets/adaptive-icon.png")}
           resizeMode="cover"
-          style={{ flex: 1, height: 100, width: null }}
+          style={{ flex: 1, height: 100, width: null, marginBottom: 10 }}
         />
       </View>
       <SafeAreaView style={{ flex: 1, width: "100%" }}>
@@ -24,7 +24,11 @@ export default function GameScreen() {
           data={players}
           numColumns={2}
           renderItem={({ item }) => (
-            <Button mode="elevated" onPress={() => {}} style={{ width: "50%" }}>
+            <Button
+              mode="elevated"
+              onPress={() => {}}
+              style={{ width: "46%", margin: "2%" }}
+            >
               {item.name}
             </Button>
           )}

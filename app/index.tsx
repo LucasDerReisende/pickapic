@@ -48,7 +48,7 @@ export default function HomeScreen() {
                 style={{marginBottom: 20, marginHorizontal: 16}}
             />
             <Button mode="contained" onPress={startGame} style={{marginBottom: 20, marginHorizontal: 16}}>
-                Start Game
+                Create Game
             </Button>
             <Button mode="outlined" onPress={joinGame} style={{marginBottom: 20, marginHorizontal: 16}}>
                 Join Game

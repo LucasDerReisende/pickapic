@@ -18,11 +18,11 @@ export function createChannel(pin: string, name: string, dispatch: Dispatch<AnyA
                 const state = channel.presenceState()
                 const uuids = Object.keys(state)
                 const users = uuids.map((uuid) => {
-                    const presences = state[uuid] as unknown as { user: string }[]
+                    const presences = state[uuid] as unknown as { user: string, uploadedImages: boolean }[]
                     return {
                         name: presences[0].user,
                         uuid: uuid,
-                        uploadedImages: false
+                        uploadedImages: presences[0].uploadedImages
                     }
                 })
                 dispatch(setUsers(users))
@@ -30,7 +30,8 @@ export function createChannel(pin: string, name: string, dispatch: Dispatch<AnyA
         .subscribe(async (status) => {
             if (status === "SUBSCRIBED") {
                 const presenceTrackStatus = await channel.track({
-                    user: name
+                    user: name,
+                    uploadedImages: false
                 })
             }
         })

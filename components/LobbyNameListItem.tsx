@@ -1,11 +1,11 @@
 import {List} from "react-native-paper";
 
-export default function LobbyNameListItem({lobbyName, finishedUpload}: { lobbyName: string, finishedUpload: boolean }) {
+export default function LobbyNameListItem({user, uploadedImages}: { user: string, uploadedImages: boolean }) {
     return (
         <List.Item
-            title={lobbyName}
+            title={user}
             left={props => {
-                if (finishedUpload) {
+                if (uploadedImages) {
                     return <List.Icon {...props} icon="check"/>
                 } else {
                     return <List.Icon {...props} icon="sync"/>

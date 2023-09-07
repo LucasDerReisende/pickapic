@@ -7,6 +7,8 @@ export default function HomeScreen() {
     const [playerName, setPlayerName] = useState<string>("");
 
     const startGame = () => {
+        const channel = client.channel(createRandomPin())
+        setChannel(channel)
         router.push("/LobbyScreen")
     }
 

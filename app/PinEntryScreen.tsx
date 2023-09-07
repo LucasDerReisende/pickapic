@@ -2,11 +2,16 @@ import {View} from "react-native";
 import {Appbar, Button, TextInput} from 'react-native-paper';
 import {router} from "expo-router";
 import {useState} from "react";
+import {client} from "../lib/supabaseClient";
+import {RealtimeChannel} from "@supabase/supabase-js";
 
 export default function PinEntryScreen() {
     const [pinString, setPinString] = useState<string>("")
+    const [channel, setChannel] = useState<RealtimeChannel | null>(null);
 
     const confirmPin = () => {
+        const channel = client.channel(pinString)
+        setChannel(channel)
         router.push("/LobbyScreen")
     }
 

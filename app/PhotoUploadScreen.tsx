@@ -10,6 +10,12 @@ import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Button } from "react-native-paper";
 import { imageBucket } from "../lib/supabaseClient";
 import uuid from "react-native-uuid";
+import { useSupabase } from "../components/SupabaseContext";
+import { useDispatch, useSelector } from "react-redux";
+import { setUsers } from "../state/slices";
+import { User } from "../lib/user";
+import { RootState } from "../state/store";
+import { useRouter } from "expo-router";
 
 const DRAW_SIZE = 15;
 
@@ -20,7 +26,7 @@ export default function PhotoUploadScreen() {
   });
 
   const [photos, setPhotos] = useState<Asset[]>();
-  const [uploaded, setUploaded] = useState(0)
+  const [uploaded, setUploaded] = useState(0);
 
   const refresh = useCallback(async () => {
     if (!permission) return;
@@ -61,6 +67,13 @@ export default function PhotoUploadScreen() {
     setPhotos(pickedPhotos.slice(0, DRAW_SIZE));
   }, [setPhotos, photos, permission]);
 
+  const { supabaseChannel } = useSupabase();
+  const dispatch = useDispatch();
+  const name = useSelector((state: RootState) => state.state.name);
+  const users = useSelector((state: RootState) => state.state.users);
+
+  const router = useRouter()
+
   const upload = useCallback(async () => {
     if (!photos) throw new Error("expecting assets to exist");
 
@@ -70,7 +83,7 @@ export default function PhotoUploadScreen() {
 
         const info = await getAssetInfoAsync(asset);
 
-        const file = await fetch(info.localUri!)
+        const file = await fetch(info.localUri!);
 
         const { error } = await imageBucket.upload(
           fileName,
@@ -84,15 +97,37 @@ export default function PhotoUploadScreen() {
           throw error;
         }
 
-        setUploaded(v => v + 1)
+        setUploaded((v) => v + 1);
 
         return fileName;
       })
     );
 
-    // TODO: in filenames sind jetzt die bilder drin, und können in anderen screens gelesen werden
-    alert(JSON.stringify(filenames));
-  }, [photos, setUploaded]);
+    dispatch(
+      setUsers(
+        users.map((user: User) => {
+          if (user.name == name) {
+            return {
+              name: name,
+              uuid: user.uuid,
+              images: filenames,
+            };
+          }
+          return user;
+        })
+      )
+    );
+
+    if (supabaseChannel == null) return;
+    const user = (users as User[]).find((user: User) => user.name == name);
+    if (user == undefined) return;
+    await supabaseChannel.track({
+      user: name,
+      images: filenames,
+    });
+
+    router.push("/LobbyScreen")
+  }, [photos, setUploaded, name, users, supabaseChannel, dispatch]);
 
   useEffect(() => {
     if (permission) {
@@ -126,9 +161,10 @@ export default function PhotoUploadScreen() {
       <Button onPress={refresh}>Refresh</Button>
 
       {uploaded > 0 && (
-        <Text>{uploaded} / {photos.length} uploaded</Text>
+        <Text>
+          {uploaded} / {photos.length} uploaded
+        </Text>
       )}
-      
     </View>
   );
 }

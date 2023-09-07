@@ -2,11 +2,10 @@ import {View, Text} from "react-native";
 import {Appbar, Button} from "react-native-paper";
 import {router} from "expo-router";
 import LobbyNameListItem from "../components/LobbyNameListItem";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {RootState} from "../state/store";
 import {User} from "../lib/user";
 import {useSupabase} from "../components/SupabaseContext";
-import {setUsers} from "../state/slices";
 
 class Player {
     name: string
@@ -21,39 +20,12 @@ class Player {
 export default function LobbyScreen() {
 
     const pin = useSelector((state: RootState) => state.state.pin)
-    const name = useSelector((state: RootState) => state.state.name)
     const users = useSelector((state: RootState) => state.state.users)
-    const {supabaseChannel, setSupabaseChannel} = useSupabase();
-
-    const dispatch = useDispatch()
+    const {supabaseChannel} = useSupabase();
 
 
     const uploadPhotos = () => {
         router.push("/PhotoUploadScreen")
-    }
-
-    const setUploaded = () => {
-        dispatch(setUsers(users.map((user: User) => {
-            if (user.name == name) {
-                return {
-                    name: name,
-                    uuid: user.uuid,
-                    uploadedImages: !user.uploadedImages
-                }
-            }
-            return user
-        })))
-
-        if (supabaseChannel == null)
-            return
-        const user = (users as User[]).find((user: User) => user.name == name)
-        if (user == undefined)
-            return
-        supabaseChannel.track({
-            user: name,
-            uploadedImages: !user.uploadedImages
-        })
-
     }
 
     const startGame = () => {
@@ -82,17 +54,14 @@ export default function LobbyScreen() {
                 {
                     users.map((user: User, index) => {
                         return <LobbyNameListItem key={index} user={user.name}
-                                                  uploadedImages={user.uploadedImages}/>
+                                                  uploadedImages={user.images.length > 0}/>
                     })
                 }
                 <Button mode="outlined" onPress={uploadPhotos} style={{marginBottom: 20, marginHorizontal: 16}}>
                     Upload Photos
                 </Button>
-                <Button mode="outlined" onPress={setUploaded} style={{marginBottom: 20, marginHorizontal: 16}}>
-                    uploaded
-                </Button>
                 <Button mode="contained" onPress={startGame}
-                        disabled={!users.every((value: User, index, array) => value.uploadedImages)}
+                        disabled={!users.every((value: User, index, array) => value.images)}
                         style={{marginBottom: 20, marginHorizontal: 16}}>
                     Start Game
                 </Button>

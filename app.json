@@ -31,6 +31,10 @@
         "projectId": "12bff46c-ff02-490e-be3a-b41aec5bda5e"
       }
     },
-    "owner": "pickapic"
+    "owner": "pickapic",
+    "plugins": [
+      "expo-router"
+    ],
+    "scheme": "your-app-scheme"
   }
 }

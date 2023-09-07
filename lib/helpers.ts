@@ -19,11 +19,11 @@ export function createChannel(pin: string, name: string, dispatch: Dispatch<AnyA
                 const state = channel.presenceState()
                 const uuids = Object.keys(state)
                 const users = uuids.map((uuid) => {
-                    const presences = state[uuid] as unknown as { user: string, uploadedImages: boolean }[]
+                    const presences = state[uuid] as unknown as { user: string, images: string }[]
                     return {
                         name: presences[0].user,
                         uuid: uuid,
-                        uploadedImages: presences[0].uploadedImages
+                        images: presences[0].images
                     }
                 })
                 dispatch(setUsers(users))
@@ -37,7 +37,7 @@ export function createChannel(pin: string, name: string, dispatch: Dispatch<AnyA
             if (status === "SUBSCRIBED") {
                 const presenceTrackStatus = await channel.track({
                     user: name,
-                    uploadedImages: false
+                    images: []
                 })
             }
         })

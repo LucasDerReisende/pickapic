@@ -33,7 +33,13 @@
     },
     "owner": "pickapic",
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos to share them with friends."
+        }
+      ]
     ],
     "scheme": "your-app-scheme"
   }

@@ -1,7 +1,5 @@
 import { Button } from "react-native-paper";
-import { SafeAreaView, View, FlatList, Text, Image } from "react-native";
-
-//Array.from({length: 5}, () => <Button/>)
+import { SafeAreaView, View, FlatList, Image } from "react-native";
 
 const players = [
   { name: "Lucas" },

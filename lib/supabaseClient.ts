@@ -10,3 +10,5 @@ export const client =  createClient(
         }
     }
 )
+
+export const imageBucket = client.storage.from('images')

@@ -29,7 +29,7 @@ export default function LobbyScreen() {
 
 
     const uploadPhotos = () => {
-        router.push("/UploadScreen")
+        router.push("/PhotoUploadScreen")
     }
 
     const setUploaded = () => {

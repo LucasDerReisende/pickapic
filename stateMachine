@@ -1,0 +1,72 @@
+import { createMachine } from "xstate";
+
+export const machine = createMachine(
+  {
+    id: "pickapic",
+    initial: "Lobby",
+    states: {
+      Lobby: {
+        on: {
+          uploadPhotos: {
+            target: "Lobby",
+            internal: false,
+          },
+          startGame: {
+            target: "Round",
+            cond: "All Players Ready",
+          },
+        },
+      },
+      Round: {
+        initial: "viewPhoto",
+        states: {
+          viewPhoto: {
+            on: {
+              selectPerson: {
+                target: "viewPhoto",
+                internal: false,
+              },
+              roundFinished: {
+                target: "viewPoints",
+                cond: "All Players Selected",
+              },
+            },
+          },
+          viewPoints: {
+            on: {
+              moveOn: {
+                target: "viewPhoto",
+              },
+            },
+          },
+        },
+        on: {
+          finishGame: {
+            target: "Lobby",
+          },
+        },
+      },
+    },
+    schema: {
+      events: {} as
+        | { type: "selectPerson" }
+        | { type: "uploadPhotos" }
+        | { type: "moveOn" }
+        | { type: "startGame" }
+        | { type: "roundFinished" }
+        | { type: "finishGame" },
+    },
+    predictableActionArguments: true,
+    preserveActionOrder: true,
+  },
+  {
+    actions: {},
+    services: {},
+    guards: {
+      "All Players Ready": (context, event) => false,
+
+      "All Players Selected": (context, event) => false,
+    },
+    delays: {},
+  },
+);

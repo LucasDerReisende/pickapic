@@ -1,5 +1,4 @@
 import {router} from "expo-router";
-import {Text} from "react-native";
 import {Appbar, Button, PaperProvider, TextInput} from "react-native-paper";
 import {useState} from "react";
 
@@ -33,7 +32,6 @@ export default function HomeScreen() {
             <Button mode="outlined" onPress={joinGame} style={{marginBottom: 20, marginHorizontal: 16}}>
                 Join Game
             </Button>
-            <Text>{playerName}</Text>
         </PaperProvider>
     )
 }
